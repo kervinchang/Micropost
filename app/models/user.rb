@@ -1,4 +1,5 @@
 class User < ApplicationRecord
+  has_many :mcposts, dependent: :destroy
   attr_accessor :remember_token, :activation_token, :reset_token
   # before_save { self.email = email.downcase }
   # before_save {email.downcase!}
@@ -69,6 +70,11 @@ class User < ApplicationRecord
   # 如果密码重设请求超时了， 返回true
   def password_reset_expired?
     reset_sent_at < 2.hours.ago
+  end
+
+  # 实现动态流原型
+  def feed
+    Mcpost.where("user_id = ?", id)
   end
 
   private
